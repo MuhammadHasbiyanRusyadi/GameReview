@@ -41,7 +41,7 @@ jobs:
         # Contoh untuk Docker Hub: ${{ secrets.DOCKER_USERNAME }}/gamereview-app:latest
 
       - name: Display build success message # Pesan konfirmasi di log workflow
-        run: | # Menambahkan kunci 'run' di sini, pastikan ini ada dan baris berikutnya diindentasi dengan benar
+        run: | # Pastikan 'run:' ini sejajar dengan 'name:', dan baris di bawahnya diindentasi 2 spasi lebih dalam
           echo "Docker image for 'GameReview' app has been successfully built by GitHub Actions!"
           echo "Check the 'Actions' tab on your GitHub repository to see the detailed build logs."
           echo "This workflow currently only builds the image. To deploy, more steps would be needed (e.g., to a cloud VM)."
