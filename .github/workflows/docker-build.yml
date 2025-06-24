@@ -41,7 +41,7 @@ jobs:
         # Contoh untuk Docker Hub: ${{ secrets.DOCKER_USERNAME }}/gamereview-app:latest
 
       - name: Display build success message # Pesan konfirmasi di log workflow
-        run: | # Menambahkan kunci 'run' di sini
+        run: | # Menambahkan kunci 'run' di sini, pastikan ini ada dan baris berikutnya diindentasi dengan benar
           echo "Docker image for 'GameReview' app has been successfully built by GitHub Actions!"
           echo "Check the 'Actions' tab on your GitHub repository to see the detailed build logs."
           echo "This workflow currently only builds the image. To deploy, more steps would be needed (e.g., to a cloud VM)."
@@ -54,7 +54,7 @@ jobs:
       #     # Anda perlu mengatur SSH_PRIVATE_KEY sebagai GitHub Secret
       #     # Pastikan server tujuan memiliki Docker terinstal dan bisa menarik image
       #     ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no user@your-server-ip "
-      #       docker pull ghcr.io/${{ github.repository }}/gamereview-app:latest &&
+      #       docker pull ghcr.com/${{ github.repository }}/gamereview-app:latest &&
       #       cd /path/to/your/app/on/server && # Ganti dengan path di server Anda
       #       docker-compose down && # Hentikan container lama
       #       docker-compose up -d # Jalankan container baru
