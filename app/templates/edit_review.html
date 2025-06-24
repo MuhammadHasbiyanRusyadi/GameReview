@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Ulasan Game - GameReview</title>
+    <!-- Google Fonts - Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome CDN untuk ikon -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif; /* Menggunakan font Poppins */
+            background: linear-gradient(135deg, #0a0a0a, #1a1a1a); /* Dark gradient background */
+            color: #f0f0f0; /* Light gray text for general content */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .container {
+            background-color: #1c1c1c; /* Slightly less dark charcoal for container */
+            border-radius: 1.5rem; /* More rounded corners */
+            border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle white border */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6); /* Stronger shadow */
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 600px;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem; /* More padding */
+            border-radius: 0.75rem; /* More rounded buttons */
+            font-weight: 600; /* Poppins SemiBold */
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase; /* Uppercase for buttons */
+            letter-spacing: 0.05em; /* Slight letter spacing */
+        }
+        .btn-blue { /* Used for Add/Save primary actions */
+            background: linear-gradient(145deg, #E53E3E, #CC0000); /* Red gradient */
+            color: white;
+            box-shadow: 0 4px 15px rgba(229, 62, 62, 0.6);
+        }
+        .btn-blue:hover {
+            background: linear-gradient(145deg, #CC0000, #E53E3E); /* Reverse gradient on hover */
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(229, 62, 62, 0.8);
+        }
+        .btn-red { /* Used for Delete/Cancel actions */
+            background-color: #AA0000; /* Darker red for delete */
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        .btn-red:hover {
+            background-color: #880000; /* Even darker red on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        }
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+            background-color: #2a2a2a; /* Lighter charcoal for inputs */
+            border: 1px solid rgba(229, 62, 62, 0.3); /* Subtle red border for inputs */
+            border-radius: 0.5rem;
+            color: #f0f0f0;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #E53E3E; /* Red border on focus */
+            box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.3); /* Red glow on focus */
+        }
+        .flash-message {
+            padding: 1.25rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+        .flash-success {
+            background-color: #28a745;
+            color: white;
+        }
+        .flash-error {
+            background-color: #E53E3E;
+            color: white;
+        }
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            color: #E53E3E; /* Vibrant red for main title */
+            text-shadow: 0 0 15px rgba(229, 62, 62, 0.7); /* More pronounced glow */
+            font-weight: 700; /* Poppins Bold */
+            text-transform: none; /* Removed uppercase */
+            letter-spacing: normal; /* Removed letter spacing */
+            border: 2px solid #E53E3E; /* Red border */
+            padding: 0.5rem 1rem; /* Padding inside the border */
+            border-radius: 0.5rem; /* Rounded corners for the border */
+            display: inline-block; /* To make padding and border apply correctly */
+        }
+        label {
+            font-weight: 600; /* Poppins SemiBold */
+            color: #f0f0f0; /* Light gray for labels */
+        }
+        p {
+            color: #aaaaaa; /* Gray for help text */
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-8">
+        <h1 class="text-3xl font-bold mb-6 text-center">Edit Ulasan Game</h1>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="mb-4">
+                    {% for category, message in messages %}
+                        <li class="flash-message {% if category == 'success' %}flash-success{% else %}flash-error{% endif %}">
+                            {{ message }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <div class="mb-4">
+                <label for="game_name" class="block text-lg font-medium">Nama Game:</label>
+                <input type="text" name="game_name" id="game_name" value="{{ review.game_name }}" placeholder="Masukkan nama game" class="form-input" required>
+            </div>
+            <div class="mb-4">
+                <label for="review_text" class="block text-lg font-medium">Ulasan Game:</label>
+                <textarea name="review_text" id="review_text" rows="6" placeholder="Tulis ulasan Anda di sini..." class="form-input">{{ review.review_text or '' }}</textarea>
+            </div>
+            <div class="mb-6">
+                <label for="image_url" class="block text-lg font-medium">URL Gambar Sampul (Opsional):</label>
+                <input type="url" name="image_url" id="image_url" value="{{ review.image_url or '' }}" placeholder="http://example.com/gambar.jpg" class="form-input">
+                <p class="text-sm text-gray-400 mt-1">Gunakan URL gambar langsung (mis. dari Imgur, Google Photos link langsung, dll.).</p>
+            </div>
+            <div class="flex justify-between">
+                <button type="submit" class="btn btn-blue">
+                    <i class="fas fa-save mr-2"></i> Perbarui Ulasan
+                </button>
+                <a href="{{ url_for('index') }}" class="btn btn-red">
+                    <i class="fas fa-times-circle mr-2"></i> Batal
+                </a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

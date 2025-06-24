@@ -1,0 +1,36 @@
+version: '3.8' # Versi format Docker Compose file
+
+services:
+  # Service untuk aplikasi web Flask Anda (Game Review App)
+  web:
+    build: ./app # Menginstruksikan Docker Compose untuk membangun image dari Dockerfile di folder 'app'
+    ports:
+      - "5000:5000" # Memetakan port 5000 dari host ke port 5000 di dalam container web
+    volumes:
+      - ./app:/app # Mounting volume untuk hot reload (Poin 6 UAS)
+                   # Setiap perubahan di folder lokal 'app' akan langsung terlihat di container
+    depends_on:
+      - db # Memastikan service 'db' (database) dimulai sebelum service 'web'
+    env_file:
+      - ./.env # Mengambil variabel lingkungan dari file .env di root proyek (Poin 7 UAS)
+
+  # Service untuk database PostgreSQL Anda
+  db:
+    image: postgres:13-alpine # Menggunakan image PostgreSQL versi 13 yang ringan
+    volumes:
+      - db_data:/var/lib/postgresql/data # Volume persisten untuk data database (Poin 4 UAS)
+                                         # Data tidak akan hilang saat container db dihentikan/dihapus
+    environment:
+      # Variabel lingkungan ini akan dibaca oleh image PostgreSQL untuk inisialisasi database
+      # Nilainya diambil dari file .env Anda yang di-load oleh docker-compose
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    env_file: # Penting: Pastikan service db juga membaca variabel dari .env
+      - ./.env
+    restart: unless-stopped # Agar database otomatis restart jika crash
+    # command: ["postgres", "-c", "log_statement=all"] # Opsional: Aktifkan untuk debugging log database
+
+# Definisi named volume untuk data database
+volumes:
+  db_data:
