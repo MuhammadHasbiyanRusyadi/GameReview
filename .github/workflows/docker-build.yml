@@ -30,18 +30,16 @@ jobs:
       - name: Build Docker image for Web App # Langkah utama untuk membangun image Docker
         uses: docker/build-push-action@v5
         with:
-          context: . # Mengubah konteks build ke root repositori
-          file: ./app/Dockerfile # Menentukan lokasi Dockerfile relatif dari root konteks
+          context: ./app # Menggunakan 'app' sebagai konteks, yang berarti Dockerfile akan dicari di dalam 'app'
+          file: Dockerfile # Cukup sebutkan 'Dockerfile' karena sudah berada di dalam konteks './app'
           push: false # Set ke 'true' jika Anda ingin push image yang dibangun ke Docker Hub/Registry.
                       # Untuk tujuan UAS (hanya build), 'false' sudah cukup.
           tags: |
-            ghcr.io/${{ github.repository }}/gamereview-app:latest # Contoh tag untuk GitHub Container Registry (GHCR)
-            ghcr.io/${{ github.repository }}/gamereview-app:${{ github.sha }} # Tag dengan commit SHA
-        # Catatan: Jika Anda tidak ingin menggunakan GHCR, Anda bisa mengganti tag ini.
-        # Contoh untuk Docker Hub: ${{ secrets.DOCKER_USERNAME }}/gamereview-app:latest
+            ghcr.io/${{ github.repository }}/gamereview-app:latest
+            ghcr.io/${{ github.repository }}/gamereview-app:${{ github.sha }}
 
       - name: Display build success message # Pesan konfirmasi di log workflow
-        run: | # Baris ini harus diindentasi 2 spasi dari '- name:'
+        run: | 
           echo "Docker image for 'GameReview' app has been successfully built by GitHub Actions!"
           echo "Check the 'Actions' tab on your GitHub repository to see the detailed build logs."
           echo "This workflow currently only builds the image. To deploy, more steps would be needed (e.g., to a cloud VM)."
@@ -49,15 +47,13 @@ jobs:
       # Anda bisa menambahkan langkah deployment di sini jika Anda memiliki server untuk deploy.
       # Contoh langkah deployment sederhana (ini hanya contoh, jangan langsung digunakan tanpa konfigurasi server):
       # - name: Deploy to Server (Contoh)
-      #   if: success() && github.ref == 'refs/heads/main' # Hanya deploy jika build berhasil dan di branch main
+      #   if: success() && github.ref == 'refs/heads/main'
       #   run: |
-      #     # Anda perlu mengatur SSH_PRIVATE_KEY sebagai GitHub Secret
-      #     # Pastikan server tujuan memiliki Docker terinstal dan bisa menarik image
       #     ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no user@your-server-ip "
       #       docker pull ghcr.com/${{ github.repository }}/gamereview-app:latest &&
-      #       cd /path/to/your/app/on/server && # Ganti dengan path di server Anda
-      #       docker-compose down && # Hentikan container lama
-      #       docker-compose up -d # Jalankan container baru
+      #       cd /path/to/your/app/on/server &&
+      #       docker-compose down &&
+      #       docker-compose up -d
       #     "
       #   env:
       #     SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
