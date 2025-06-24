@@ -1,59 +1,40 @@
-name: Build Docker Image for GameReview App # Nama workflow yang akan muncul di GitHub Actions
+name: Build and Push Docker Image for GameReview App # Nama workflow yang lebih spesifik
 
 on:
   push:
     branches:
-      - main # Workflow ini akan terpicu setiap kali ada push ke branch 'main'
+      - main # Menggunakan branch 'main' sesuai proyek Anda
   pull_request:
     branches:
-      - main # Workflow ini juga akan terpicu untuk setiap pull request ke 'main'
+      - main # Menggunakan branch 'main' sesuai proyek Anda
 
 jobs:
-  build: # Mendefinisikan satu job bernama 'build'
-    runs-on: ubuntu-latest # Job ini akan berjalan di runner virtual Ubuntu terbaru yang disediakan GitHub
+  build:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository # Langkah untuk mengambil kode sumber dari repositori GitHub
-        uses: actions/checkout@v4 
+      - name: Checkout source code
+        uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx # Menyiapkan Buildx untuk build Docker yang lebih efisien dan modern
-        uses: docker/setup-buildx-action@v3 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Login to Docker Hub (Opsional - Jika ingin push image ke Docker Hub)
-        # Lewati (beri komentar) langkah ini jika Anda tidak ingin push image ke Docker Hub.
-        # Jika Anda ingin push, Anda perlu mengatur secret DOCKER_USERNAME dan DOCKER_PASSWORD di pengaturan repositori GitHub Anda.
-        # uses: docker/login-action@v3
-        # with:
-        #   username: ${{ secrets.DOCKER_USERNAME }}
-        #   password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build Docker image for Web App # Langkah utama untuk membangun image Docker
-        uses: docker/build-push-action@v5
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
         with:
-          context: ./app # Menggunakan 'app' sebagai konteks, yang berarti Dockerfile akan dicari di dalam 'app'
-          file: Dockerfile # Cukup sebutkan 'Dockerfile' karena sudah berada di dalam konteks './app'
-          push: false # Set ke 'true' jika Anda ingin push image yang dibangun ke Docker Hub/Registry.
-                      # Untuk tujuan UAS (hanya build), 'false' sudah cukup.
-          tags: |
-            ghcr.io/${{ github.repository }}/gamereview-app:latest
-            ghcr.io/${{ github.repository }}/gamereview-app:${{ github.sha }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Display build success message # Pesan konfirmasi di log workflow
-        run: | 
-          echo "Docker image for 'GameReview' app has been successfully built by GitHub Actions!"
-          echo "Check the 'Actions' tab on your GitHub repository to see the detailed build logs."
-          echo "This workflow currently only builds the image. To deploy, more steps would be needed (e.g., to a cloud VM)."
-
-      # Anda bisa menambahkan langkah deployment di sini jika Anda memiliki server untuk deploy.
-      # Contoh langkah deployment sederhana (ini hanya contoh, jangan langsung digunakan tanpa konfigurasi server):
-      # - name: Deploy to Server (Contoh)
-      #   if: success() && github.ref == 'refs/heads/main'
-      #   run: |
-      #     ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no user@your-server-ip "
-      #       docker pull ghcr.com/${{ github.repository }}/gamereview-app:latest &&
-      #       cd /path/to/your/app/on/server &&
-      #       docker-compose down &&
-      #       docker-compose up -d
-      #     "
-      #   env:
-      #     SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Build and push Docker image
+        # Mengubah dari 'uses: docker/build-push-action@v5' ke 'run' untuk debugging
+        # Ini akan menjalankan perintah docker build secara langsung di shell runner
+        run: |
+          echo "Listing files in current directory (.):"
+          ls -la .
+          echo "Listing files in app/ directory:"
+          ls -la ./app
+          
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/gamereview-app:latest -f ./app/Dockerfile .
+          
+          # Jika build berhasil, baris di bawah ini akan mendorong image
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/gamereview-app:latest
