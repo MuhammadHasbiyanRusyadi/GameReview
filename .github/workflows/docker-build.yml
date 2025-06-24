@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source code
+      - name: Checkout source code # Mengambil kode dari repositori
         uses: actions/checkout@v3
 
       - name: Set up Docker Buildx
@@ -25,16 +25,26 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Build and push Docker image
-        # Mengubah dari 'uses: docker/build-push-action@v5' ke 'run' untuk debugging
-        # Ini akan menjalankan perintah docker build secara langsung di shell runner
-        run: |
-          echo "Listing files in current directory (.):"
+      - name: Build and push Docker image # Langkah utama untuk membangun image Docker
+        run: | # Menggunakan 'run' untuk kontrol yang lebih eksplisit
+          echo "Current working directory:"
+          pwd
+          echo "Listing files in root repository:"
           ls -la .
-          echo "Listing files in app/ directory:"
+          echo "Listing files in app/ directory BEFORE cd:"
           ls -la ./app
           
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/gamereview-app:latest -f ./app/Dockerfile .
+          # Pindah ke direktori 'app' tempat Dockerfile berada
+          cd app
+          
+          echo "Current working directory AFTER cd app/:"
+          pwd
+          echo "Listing files in app/ directory AFTER cd:"
+          ls -la . # Akan menampilkan isi 'app/'
+          
+          # Jalankan docker build dari dalam direktori 'app'
+          # Sekarang Dockerfile bisa direferensikan langsung sebagai 'Dockerfile'
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/gamereview-app:latest -f Dockerfile .
           
           # Jika build berhasil, baris di bawah ini akan mendorong image
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/gamereview-app:latest
