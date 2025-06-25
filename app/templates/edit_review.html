@@ -4,17 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Ulasan Game - GameReview</title>
-    <!-- Google Fonts - Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome CDN untuk ikon -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: 'Poppins', sans-serif; /* Menggunakan font Poppins */
-            background: linear-gradient(135deg, #0a0a0a, #1a1a1a); /* Dark gradient background */
-            color: #f0f0f0; /* Light gray text for general content */
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+            color: #f0f0f0;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -22,42 +19,42 @@
             padding: 2rem;
         }
         .container {
-            background-color: #1c1c1c; /* Slightly less dark charcoal for container */
-            border-radius: 1.5rem; /* More rounded corners */
-            border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle white border */
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6); /* Stronger shadow */
+            background-color: #1c1c1c;
+            border-radius: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
             padding: 2.5rem;
             width: 100%;
             max-width: 600px;
         }
         .btn {
-            padding: 0.75rem 1.5rem; /* More padding */
-            border-radius: 0.75rem; /* More rounded buttons */
-            font-weight: 600; /* Poppins SemiBold */
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
             transition: all 0.2s ease-in-out;
             display: flex;
             align-items: center;
             justify-content: center;
-            text-transform: uppercase; /* Uppercase for buttons */
-            letter-spacing: 0.05em; /* Slight letter spacing */
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
-        .btn-blue { /* Used for Add/Save primary actions */
-            background: linear-gradient(145deg, #E53E3E, #CC0000); /* Red gradient */
+        .btn-blue {
+            background: linear-gradient(145deg, #E53E3E, #CC0000);
             color: white;
             box-shadow: 0 4px 15px rgba(229, 62, 62, 0.6);
         }
         .btn-blue:hover {
-            background: linear-gradient(145deg, #CC0000, #E53E3E); /* Reverse gradient on hover */
+            background: linear-gradient(145deg, #CC0000, #E53E3E);
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(229, 62, 62, 0.8);
         }
-        .btn-red { /* Used for Delete/Cancel actions */
-            background-color: #AA0000; /* Darker red for delete */
+        .btn-red {
+            background-color: #AA0000;
             color: white;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
         .btn-red:hover {
-            background-color: #880000; /* Even darker red on hover */
+            background-color: #880000;
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
         }
@@ -66,15 +63,15 @@
             padding: 0.75rem;
             margin-top: 0.5rem;
             margin-bottom: 1rem;
-            background-color: #2a2a2a; /* Lighter charcoal for inputs */
-            border: 1px solid rgba(229, 62, 62, 0.3); /* Subtle red border for inputs */
+            background-color: #2a2a2a;
+            border: 1px solid rgba(229, 62, 62, 0.3);
             border-radius: 0.5rem;
             color: #f0f0f0;
         }
         .form-input:focus {
             outline: none;
-            border-color: #E53E3E; /* Red border on focus */
-            box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.3); /* Red glow on focus */
+            border-color: #E53E3E;
+            box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.3);
         }
         .flash-message {
             padding: 1.25rem;
@@ -94,22 +91,22 @@
         }
         h1 {
             font-family: 'Poppins', sans-serif;
-            color: #E53E3E; /* Vibrant red for main title */
-            text-shadow: 0 0 15px rgba(229, 62, 62, 0.7); /* More pronounced glow */
-            font-weight: 700; /* Poppins Bold */
-            text-transform: none; /* Removed uppercase */
-            letter-spacing: normal; /* Removed letter spacing */
-            border: 2px solid #E53E3E; /* Red border */
-            padding: 0.5rem 1rem; /* Padding inside the border */
-            border-radius: 0.5rem; /* Rounded corners for the border */
-            display: inline-block; /* To make padding and border apply correctly */
+            color: #E53E3E;
+            text-shadow: 0 0 15px rgba(229, 62, 62, 0.7);
+            font-weight: 700;
+            text-transform: none;
+            letter-spacing: normal;
+            border: 2px solid #E53E3E;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            display: inline-block;
         }
         label {
-            font-weight: 600; /* Poppins SemiBold */
-            color: #f0f0f0; /* Light gray for labels */
+            font-weight: 600;
+            color: #f0f0f0;
         }
         p {
-            color: #aaaaaa; /* Gray for help text */
+            color: #aaaaaa;
         }
     </style>
 </head>
@@ -117,7 +114,6 @@
     <div class="container mt-8">
         <h1 class="text-3xl font-bold mb-6 text-center">Edit Ulasan Game</h1>
 
-        <!-- Flash Messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 <ul class="mb-4">
