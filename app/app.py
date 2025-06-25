@@ -9,7 +9,6 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24) 
 
 # Konfigurasi Database dari .env file
-# Variabel-variabel ini akan diisi dari file .env Anda oleh Docker Compose
 DB_NAME = os.getenv("DB_NAME")
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
@@ -55,7 +54,7 @@ def get_db_connection():
             if conn:
                 conn.close()
             abort(500, description=f"Unexpected database connection error: {e}.")
-    # Ini seharusnya tidak tercapai jika abort dipanggil, tapi untuk jaga-jaga
+
     abort(500, description="Failed to connect to database after multiple retries.")
 
 
@@ -90,7 +89,6 @@ def init_db():
         if conn:
             conn.close()
 
-# Panggil fungsi inisialisasi database saat aplikasi Flask pertama kali dijalankan.
 with app.app_context():
     init_db()
 
@@ -122,7 +120,7 @@ def get_review(review_id):
         abort(404)
     return review
 
-# --- ROUTE UNTUK APLIKASI GAME REVIEW ---
+#Routingnya
 
 @app.route('/')
 def index():
@@ -172,7 +170,7 @@ def create_review():
                             (game_name, review_text, image_url))
                 conn.commit()
                 flash('Ulasan game berhasil dibuat!', 'success')
-                return redirect(url_for('index')) # Kembali ke daftar ulasan
+                return redirect(url_for('index')) 
             except Exception as e:
                 print(f"Error creating game review: {e}")
                 flash('Terjadi kesalahan saat membuat ulasan game.', 'error')
@@ -211,7 +209,7 @@ def edit_review(id):
                             (game_name, review_text, image_url, id))
                 conn.commit()
                 flash('Ulasan game berhasil diperbarui!', 'success')
-                return redirect(url_for('index')) # Kembali ke daftar ulasan
+                return redirect(url_for('index')) 
             except Exception as e:
                 print(f"Error updating game review {id}: {e}")
                 flash('Terjadi kesalahan saat memperbarui ulasan game.', 'error')

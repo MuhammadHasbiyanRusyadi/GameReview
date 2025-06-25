@@ -21,8 +21,7 @@ services:
       - db_data:/var/lib/postgresql/data # Volume persisten untuk data database (Poin 4 UAS)
                                          # Data tidak akan hilang saat container db dihentikan/dihapus
     environment:
-      # Variabel lingkungan ini akan dibaca oleh image PostgreSQL untuk inisialisasi database
-      # Nilainya diambil dari file .env Anda yang di-load oleh docker-compose
+
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
