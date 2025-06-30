@@ -163,7 +163,8 @@
                 {% for review in game_reviews %}
                     <div class="review-item">
                         {% if review.image_url %}
-                            <img src="{{ review.image_url }}" alt="Sampul Game {{ review.game_name }}" class="review-image" onerror="this.onerror=null;this.src='https://placehold.co/150x200/2D3748/E2E8F0?text=No+Image';">
+                            <img src="{{ review.image_url }}" alt="Cover Game {{ review.game_name }}" class="review-image"
+                                onerror="this.onerror=null;this.src='https://placehold.co/150x200/2D3748/E2E8F0?text=No+Image';">
                         {% else %}
                             <img src="https://placehold.co/150x200/2D3748/E2E8F0?text=No+Image" alt="Tidak Ada Gambar" class="review-image">
                         {% endif %}
