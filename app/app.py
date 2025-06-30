@@ -1,30 +1,22 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, abort
 import os
 import psycopg2
-from psycopg2 import extras # Digunakan untuk DictCursor
-import time # Import modul time untuk delay
+from psycopg2 import extras
+import time
 
 app = Flask(__name__)
-# Kunci rahasia untuk sesi Flask dan flash messages. Ganti dengan string unik yang kuat di produksi.
-app.secret_key = os.urandom(24) 
+app.secret_key = os.urandom(24)
 
-# Konfigurasi Database dari .env file
 DB_NAME = os.getenv("DB_NAME")
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
-DB_HOST = os.getenv("DB_HOST") # Ini akan menjadi 'db' (nama service di docker-compose.yml)
+DB_HOST = os.getenv("DB_HOST")
 DB_PORT = os.getenv("DB_PORT")
 
 def get_db_connection():
-    """
-    Membuat dan mengembalikan objek koneksi ke database PostgreSQL.
-    Mengambil detail koneksi dari variabel lingkungan yang diatur.
-    Akan menangani error koneksi dan menampilkan pesan.
-    Menambahkan retry logic untuk mengatasi database yang belum siap.
-    """
     conn = None
-    retries = 5 # Jumlah percobaan ulang
-    delay = 3 # Detik delay antar percobaan
+    retries = 5
+    delay = 3
 
     for i in range(retries):
         try:
@@ -44,10 +36,8 @@ def get_db_connection():
                 time.sleep(delay)
             else:
                 print("Max retries reached. Could not connect to database.")
-                # Jika koneksi gagal setelah semua retry, pastikan conn ditutup
                 if conn:
                     conn.close()
-                # Melemparkan error agar aplikasi Flask dapat menangani kegagalan koneksi
                 abort(500, description=f"Database connection error: {e}. Please ensure the database service is running and accessible.")
         except Exception as e:
             print(f"An unexpected error occurred during database connection: {e}")
@@ -59,10 +49,6 @@ def get_db_connection():
 
 
 def init_db():
-    """
-    Menginisialisasi database dengan membuat tabel 'game_reviews' jika belum ada.
-    Tabel ini akan menyimpan data untuk ulasan game.
-    """
     conn = None
     cur = None
     try:
@@ -93,10 +79,6 @@ with app.app_context():
     init_db()
 
 def get_review(review_id):
-    """
-    Mengambil satu ulasan game dari database berdasarkan ID.
-    Jika ulasan tidak ditemukan, akan menampilkan flash message dan menghentikan permintaan (404).
-    """
     conn = None
     cur = None
     review = None
@@ -120,14 +102,8 @@ def get_review(review_id):
         abort(404)
     return review
 
-#Routingnya
-
 @app.route('/')
 def index():
-    """
-    Route utama untuk menampilkan daftar ulasan game.
-    Membaca semua ulasan game dari database dan mengirimkannya ke template index.html.
-    """
     conn = None
     cur = None
     game_reviews = []
@@ -148,11 +124,6 @@ def index():
 
 @app.route('/create_review', methods=('GET', 'POST'))
 def create_review():
-    """
-    Route untuk membuat ulasan game baru.
-    GET: Menampilkan formulir pembuatan ulasan.
-    POST: Memproses data dari formulir dan menyimpan ulasan ke database.
-    """
     if request.method == 'POST':
         game_name = request.form['game_name']
         review_text = request.form['review_text']
@@ -170,7 +141,7 @@ def create_review():
                             (game_name, review_text, image_url))
                 conn.commit()
                 flash('Ulasan game berhasil dibuat!', 'success')
-                return redirect(url_for('index')) 
+                return redirect(url_for('index'))
             except Exception as e:
                 print(f"Error creating game review: {e}")
                 flash('Terjadi kesalahan saat membuat ulasan game.', 'error')
@@ -185,11 +156,6 @@ def create_review():
 
 @app.route('/<int:id>/edit_review', methods=('GET', 'POST'))
 def edit_review(id):
-    """
-    Route untuk mengedit ulasan game yang sudah ada.
-    GET: Menampilkan formulir edit dengan data ulasan yang sudah ada.
-    POST: Memproses data dari formulir dan memperbarui ulasan di database.
-    """
     review = get_review(id)
 
     if request.method == 'POST':
@@ -209,7 +175,7 @@ def edit_review(id):
                             (game_name, review_text, image_url, id))
                 conn.commit()
                 flash('Ulasan game berhasil diperbarui!', 'success')
-                return redirect(url_for('index')) 
+                return redirect(url_for('index'))
             except Exception as e:
                 print(f"Error updating game review {id}: {e}")
                 flash('Terjadi kesalahan saat memperbarui ulasan game.', 'error')
@@ -224,10 +190,6 @@ def edit_review(id):
 
 @app.route('/<int:id>/delete_review', methods=('POST',))
 def delete_review(id):
-    """
-    Route untuk menghapus ulasan game.
-    Hanya menerima metode POST untuk operasi penghapusan (lebih aman).
-    """
     get_review(id)
     conn = None
     cur = None
